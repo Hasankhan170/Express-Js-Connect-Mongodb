@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Todos from "../models/todos.model.js"
 
 
@@ -51,4 +52,40 @@ const getAllTodo = async (req,res)=>{
    }
 }
 
-export {addTodo,getAllTodo}
+//single todo
+const singleTodo = async (req,res)=>{
+    const {id} =  req.params
+    
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            massage : "Not valid ID"
+        })
+    }
+
+    try {
+        const todo = await Todos.findById(id)
+
+        if(!todo){
+            res.status(400).json({
+                massage:'todo Not found'
+            })
+            return
+        }
+
+        res.status(200).json({
+            todo:todo
+        })
+
+    } catch (error) {
+
+        console.log(error.message);
+        res.status(500).json({
+            message: "Failed to fetch todo",
+            error: error.message,
+        })
+        
+    }
+}
+
+
+export {addTodo,getAllTodo,singleTodo}
