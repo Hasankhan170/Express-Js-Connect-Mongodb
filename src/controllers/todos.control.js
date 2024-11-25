@@ -1,8 +1,10 @@
 import Todos from "../models/todos.model.js"
 
 
-const addTodo = (req,res)=>{
-    const {title,description} = req.body;
+//todo add
+const addTodo = async (req,res)=>{
+    try {
+        const {title,description} = req.body;
 
     if(!title || !description){
         res.status(400).json({
@@ -11,7 +13,7 @@ const addTodo = (req,res)=>{
         return
     }
 
-    const todo = Todos.create({
+    const todo = await Todos.create({
         title,
         description
     })
@@ -19,6 +21,34 @@ const addTodo = (req,res)=>{
         massage : "todo added successfully",
         data : todo
     })
+
+    } catch (error) {
+
+        console.log(error.message);
+        res.status(500).json({
+            message: "Failed to add todo",
+            error: error.message,
+          });
+        
+    }
 }
 
-export {addTodo}
+//get all todo
+const getAllTodo = async (req,res)=>{
+   try {
+    const todos = await Todos.find({})
+    res.status(200).json({
+        todos:todos
+    })
+   } catch (error) {
+
+    console.log(error.message);
+    res.status(500).json({
+    message: "Failed to fetch todos",
+    error: error.message,
+    })
+    
+   }
+}
+
+export {addTodo,getAllTodo}
