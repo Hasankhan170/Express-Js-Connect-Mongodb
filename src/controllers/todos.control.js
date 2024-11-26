@@ -113,12 +113,50 @@ const deleteTodo = async (req,res)=>{
         massage:'todo deleted successfully',
         data:todo
     })
-    
+
     } catch (error) {
         console.log(error.message);
         
     }
 }
 
+//update todo
+const updateTodo = async (req,res)=>{
+    try {
+        const {id} = req.params;
+    const {title,description} = req.body;
 
-export {addTodo,getAllTodo,singleTodo,deleteTodo}
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({
+            massage : "Not valid ID"
+        })
+    }
+
+    const todo = await Todos.findByIdAndUpdate(
+        {_id:id},
+       { title,
+        description
+       },
+    )
+
+    if(!todo){
+        res.status(400).json({
+            massage : "Todo not found"
+        })
+        return
+    }
+
+    res.status(200).json({
+        massage : "todo updated successfully",
+        data:todo
+    })
+    } catch (error) {
+        console.error(error.message);
+        res.status(400).json({
+            message: "Something went wrong",
+        });
+    }
+}
+
+
+export {addTodo,getAllTodo,singleTodo,deleteTodo,updateTodo}
