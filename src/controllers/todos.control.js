@@ -134,9 +134,7 @@ const updateTodo = async (req,res)=>{
 
     const todo = await Todos.findByIdAndUpdate(
         {_id:id},
-       { title,
-        description
-       },
+       {...req.body},
     )
 
     if(!todo){
